@@ -1,2 +1,2 @@
-Word searchin using aho-corasick algorithm
-==========================================
+Word Searchin Using "aho-corasick" Algorithm
+============================================
