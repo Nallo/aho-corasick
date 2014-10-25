@@ -27,10 +27,20 @@ n = g.get_node(1)
 puts "1--t--> #{n.has_edge_with_id('t')}"
 puts "1--w--> #{n.has_edge_with_id('w')}"
 puts "1--q--> #{n.has_edge_with_id('q')}"
+puts
 
 puts n.is_connected_to(2)
 puts n.is_connected_to(3)
 puts n.is_connected_to(0)
 puts n.is_connected_to(0)
 puts n.is_connected_to(0)
+puts
 
+puts n.get_goto('t')
+puts n.get_goto('w')
+
+if n.get_goto('q')
+	puts "ok"
+else
+	puts "ko"
+end
