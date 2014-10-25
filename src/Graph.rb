@@ -37,7 +37,7 @@ class Node
     #
     # The neighbors of the given Node.
     #
-    def get_neighbors
+    def get_neighbors!
         @neighbors
     end
 
@@ -100,7 +100,7 @@ class Node
     #
     # True if the node has an edge with the give identifier, false otherwise.
     #
-    def has_edge_with_id(edge_id)
+    def has_edge_with_id?(edge_id)
         return (@neighbors.values.include?(edge_id))
     end
 
@@ -112,7 +112,7 @@ class Node
     #
     # True if the node is connected to node_id, false otherwise.
     #
-    def is_connected_to(node_id)
+    def is_connected_to?(node_id)
         return (@neighbors.keys.include?(node_id))
     end
 end
@@ -144,6 +144,7 @@ class Graph
     # ==== Return
     #
     # The list of nodes.
+    #
     def get_all_nodes
         @nodes.values
     end
@@ -156,7 +157,7 @@ class Graph
     #
     # The pointer to the identified node.
     #
-    def get_node(id)
+    def get_node!(id)
         @nodes[id]
     end
 
