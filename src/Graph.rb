@@ -1,5 +1,10 @@
 #!/usr/bin/env ruby -wKU
-
+#
+#
+# Created on Oct 25 2014
+# Author: Nallo 
+#
+#
 # The Node class is used to abstract the graph node concept.
 class Node
     # Class constructor.
