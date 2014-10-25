@@ -10,16 +10,20 @@ class Node
     # * +neighbors+  The set of neighbors (key,value) pairs
     # * +failure+    The failure function used by Aho-Corasick
     # * +output+     The output function used by Aho-Corasick
+    # * +goto_value+ The set of neighbors we can reach using the edge id.
+    #
     def initialize(id)
         @id         = id
         @neighbors  = {}
         @failure    = 0
         @output     = []
+        @goto_value = {}
     end
 
     # ==== Return
     #
     # The Node identifier.
+    #
     def get_id
         @id        
     end
@@ -27,6 +31,7 @@ class Node
     # ==== Return
     #
     # The neighbors of the given Node.
+    #
     def get_neighbors
         @neighbors
     end
@@ -34,6 +39,7 @@ class Node
     # ==== Return
     #
     # The value of the failure function.
+    #
     def get_failure
         @failure
     end
@@ -41,12 +47,28 @@ class Node
     # ==== Return
     #
     # The value of the output function.
+    #
     def get_output
         @output
     end
 
-    # Connect two nodes by using an edge.
+    # Get the value of the goto function.
     #
+    # ==== Attributes
+    #
+    # * +edge_id+  The edge identifier.
+    #
+    # ==== Return
+    #
+    # * The identifier of the reachable Node using the given edge_id.
+    # * nil on failure
+    #
+    def get_goto(edge_id)
+        @goto_value[edge_id]
+    end
+
+    # Connect two nodes by using an edge.
+    # 
     # ==== Attributes
     #
     # * +node_id+ The node we want connect to.
@@ -57,8 +79,12 @@ class Node
     #    n1 = Node.new(1)
     #    n2 = Node.new(2)
     #    n1.connect_to(2,"edge 1-->2")
+    #
     def connect_to(node_id, edge_id)
-        @neighbors[node_id] = edge_id if not @neighbors.include?(node_id)
+        if ( not @neighbors.include?(node_id) )
+            @neighbors[node_id]  = edge_id
+            @goto_value[edge_id] = node_id 
+        end
     end
 
     # ==== Attributes
@@ -68,6 +94,7 @@ class Node
     # ==== Return
     #
     # True if the node has an edge with the give identifier, false otherwise.
+    #
     def has_edge_with_id(edge_id)
         return (@neighbors.values.include?(edge_id))
     end
@@ -79,6 +106,7 @@ class Node
     # ==== Return
     #
     # True if the node is connected to node_id, false otherwise.
+    #
     def is_connected_to(node_id)
         return (@neighbors.keys.include?(node_id))
     end
@@ -92,6 +120,7 @@ class Graph
     # ==== Attributes
     #
     # * +nodes+     The set of the nodes.
+    #
     def initialize
         @nodes = {}
     end
@@ -102,6 +131,7 @@ class Graph
     # ==== Attributes
     #
     # * +id+     The Node identifier.
+    #
     def add_node(id)
         @nodes[id] = Node.new(id) if not @nodes.include?(id)
     end
@@ -120,6 +150,7 @@ class Graph
     # ==== Return
     #
     # The pointer to the identified node.
+    #
     def get_node(id)
         @nodes[id]
     end
@@ -136,6 +167,7 @@ class Graph
     # ==== Return
     #
     # On success it creates the edge.
+    #
     def add_edge(node_id_from, node_id_to, edge_id)
         if (not @nodes.include?(node_id_from)) || (not @nodes.include?(node_id_to))
             puts "(#{node_id_from},#{node_id_to}) One of the nodes does not exist"
