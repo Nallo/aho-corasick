@@ -57,6 +57,16 @@ class Node
         @output
     end
 
+    # Add the keyword to the output of the give node.
+    #
+    # ==== Attributes
+    #
+    # * +keyword+  The keyword to add.
+    #
+    def add_output(keyword)
+        @output << keyword
+    end
+
     # Get the value of the goto function.
     #
     # ==== Attributes
@@ -120,8 +130,9 @@ end
 
 # The Graph class is used to abstract the graph concept.
 class Graph
+
     # Class constructor.
-    #
+    # Initialize a generic Graph.
     # ==== Attributes
     #
     # * +nodes+     The set of the nodes.
@@ -180,5 +191,90 @@ class Graph
         else
             @nodes[node_id_from].connect_to(node_id_to, edge_id)
         end
+    end
+
+    # Build the the Aho-Corasick Graph.
+    #
+    # http://en.wikipedia.org/wiki/Aho%E2%80%93Corasick_string_matching_algorithm
+    #
+    # The basic Graph needs to be created before calling this method.
+    #
+    # ==== Attributes
+    #
+    # * +keywords+  The list of keywords.
+    #
+    # ==== Usage
+    #
+    #    keywords = import_text_from_file(filename)
+    #    g        = Graph.new()
+    #    g.build_aho_corasick_graph!(keywords)
+    #
+    # ==== Return
+    #
+    # The Aho-Corasick Graph.
+    #
+    def build_aho_corasick_graph!(keywords)
+        add_node(0)
+        new_state = get_node!(0).get_id
+
+        keywords.each do |keyword|
+            new_state = enter!(keyword, new_state)
+        end
+    end
+
+# Functions for Debug Purpose.
+
+    #
+    # For each Node in the Graph, display the value of the output function.
+    #
+    def display_outputs
+        @nodes.values.each do |n|
+            puts "Node #{n.get_id} --> #{n.get_output}" if n.get_output.size > 0
+        end
+    end
+
+    #
+    # For each Node in the Graph, display the neighbors.
+    #
+    def display_neighbors
+        @nodes.values.each do |n|
+            puts "Node #{n.get_id} --> #{n.get_neighbors!}" if n.get_neighbors!.size > 0
+        end
+    end
+
+    #
+    # Display the entire Graph.
+    # For each node, display the neighbors and the value of the
+    # output function.
+    #
+    def display_graph
+        @nodes.values.each do |n|
+            puts "Node #{n.get_id}"
+            puts  " --> #{n.get_neighbors!}" if n.get_neighbors!.size > 0
+            puts  " --> #{n.get_output}" if n.get_output.size > 0
+            puts
+        end
+        
+    end
+
+private
+    def enter!(keyword, new_state)
+        state = @nodes[0]
+        keyword_index = 0
+        
+        while state.get_goto(keyword[keyword_index])
+            state_id = state.get_goto(keyword[keyword_index])
+            state    = @nodes[state_id]
+            keyword_index += 1
+        end
+
+        keyword_index.upto(keyword.length - 1) { |i|
+            new_state += 1
+            add_node(new_state)
+            add_edge(state.get_id, new_state, keyword[i])
+            state = @nodes[new_state]
+        }
+        state.add_output(keyword)
+        return new_state
     end
 end
