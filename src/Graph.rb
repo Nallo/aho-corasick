@@ -49,6 +49,10 @@ class Node
         @failure
     end
 
+    def set_failure(value)
+        @failure = value        
+    end
+
     # ==== Return
     #
     # The value of the output function.
@@ -67,6 +71,9 @@ class Node
         @output << keyword
     end
 
+    def set_output(output)
+        @output = output
+    end
     # Get the value of the goto function.
     #
     # ==== Attributes
@@ -220,6 +227,8 @@ class Graph
         keywords.each do |keyword|
             new_state = enter!(keyword, new_state)
         end
+
+        compute_aho_corasick_failure()
     end
 
 # Functions for Debug Purpose.
@@ -251,7 +260,8 @@ class Graph
         @nodes.values.each do |n|
             puts "Node #{n.get_id}"
             puts  " --> #{n.get_neighbors!}" if n.get_neighbors!.size > 0
-            puts  " --> #{n.get_output}" if n.get_output.size > 0
+            puts  " --> #{n.get_output}"     if n.get_output.size     > 0
+            puts  " --> #{n.get_failure}"    if n.get_failure        != 0
             puts
         end
         
@@ -276,5 +286,43 @@ private
         }
         state.add_output(keyword)
         return new_state
+    end
+
+    def compute_aho_corasick_failure()
+        queue = []
+
+        @nodes[0].get_neighbors!.each do |first_level_neighbor|
+            neighbor_id = first_level_neighbor[0]
+            queue << @nodes[neighbor_id]
+            # we do not need to set f(first_level_neighbor) to 0
+            # because it is done by the default constructor.
+        end
+
+        while queue.size > 0 do
+            r = queue.shift
+
+            r.get_neighbors!.each do |r_neighbor|
+                r_neighbor_id   = r_neighbor[0]
+                r_neighbor_edge = r_neighbor[1]
+                queue << @nodes[r_neighbor_id]
+                state  = r.get_failure
+
+                while state!=0 && @nodes[state].get_goto(r_neighbor_edge)==nil
+                    state = @nodes[state].get_failure
+                end
+                
+                if @nodes[state].get_goto(r_neighbor_edge)
+                    @nodes[r_neighbor_id].set_failure(@nodes[state].get_goto(r_neighbor_edge))
+                # else
+                #     @nodes[r_neighbor_id].set_failure(0)                    
+                end
+
+                s = @nodes[r_neighbor_id].get_failure
+
+                output1 = @nodes[r_neighbor_id].get_output
+                output2 = @nodes[s].get_output
+                @nodes[r_neighbor_id].set_output( output1 |= output2 )
+            end
+        end
     end
 end
