@@ -1,26 +1,14 @@
 #!/usr/bin/env ruby -wKU
 
-require_relative 'Graph.rb'
+require_relative 'Text.rb'
 
-#puts "Keywords"
-keywords = []
-keywords << "he"
-keywords << "she"
-keywords << "his"
-keywords << "hers"
-#puts keywords
-#puts
+t1 = Text.new("he\nshe\nhis\nhers")
+t2 = Text.new("he she his hers")
+t3 = Text.new(["he", "she", "his", "hers"])
 
-g2 = Graph.new()
-g2.build_aho_corasick_graph!(keywords)
-g2.display_graph
+t1.display_result()
+t2.display_result()
+t3.display_result()
 
-lines = []
-File.open("../keywords-en.txt", "r") do |file|
-	while line = file.gets
-		lines << line
-	end
-end
-
-bigGraph = Graph.new()
-bigGraph.build_aho_corasick_graph!(lines)
+#TBD
+#t1.find("needle")

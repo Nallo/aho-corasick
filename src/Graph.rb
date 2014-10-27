@@ -222,12 +222,6 @@ class Graph
     #
     # * +keywords+  The list of keywords.
     #
-    # ==== Usage
-    #
-    #    keywords = import_text_from_file(filename)
-    #    g        = Graph.new()
-    #    g.build_aho_corasick_graph!(keywords)
-    #
     # ==== Return
     #
     # The Aho-Corasick Graph.
