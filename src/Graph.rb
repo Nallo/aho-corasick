@@ -29,7 +29,7 @@ class Node
     #
     # The Node identifier.
     #
-    def get_id
+    def id
         @id        
     end
 
@@ -37,7 +37,7 @@ class Node
     #
     # The neighbors of the given Node.
     #
-    def get_neighbors!
+    def neighbors
         @neighbors
     end
 
@@ -45,7 +45,7 @@ class Node
     #
     # The value of the failure function.
     #
-    def get_failure
+    def failure
         @failure
     end
 
@@ -55,7 +55,7 @@ class Node
     #
     # * +value+ The value we want to set.
     #
-    def set_failure(value)
+    def failure=(value)
         @failure = value        
     end
 
@@ -63,8 +63,18 @@ class Node
     #
     # The value of the output function.
     #
-    def get_output
+    def output
         @output
+    end
+
+    # Set the value of the the output function.
+    #
+    # ==== Attributes
+    #
+    # * +output+ The value we want to set.
+    #
+    def output=(output)
+        @output = output
     end
 
     # Add the keyword to the output of the give node.
@@ -77,15 +87,6 @@ class Node
         @output << keyword
     end
 
-    # Set the value of the the output function.
-    #
-    # ==== Attributes
-    #
-    # * +output+ The value we want to set.
-    #
-    def set_output(output)
-        @output = output
-    end
     # Get the value of the goto function.
     #
     # ==== Attributes
@@ -97,7 +98,7 @@ class Node
     # * The identifier of the reachable Node using the given edge_id.
     # * nil on failure
     #
-    def get_goto(edge_id)
+    def goto(edge_id)
         @goto_value[edge_id]
     end
 
@@ -175,7 +176,7 @@ class Graph
     #
     # The list of nodes.
     #
-    def get_all_nodes
+    def nodes
         @nodes.values
     end
 
@@ -187,7 +188,7 @@ class Graph
     #
     # The pointer to the identified node.
     #
-    def get_node!(id)
+    def node!(id)
         @nodes[id]
     end
 
@@ -208,7 +209,7 @@ class Graph
         if (not @nodes.include?(node_id_from)) || (not @nodes.include?(node_id_to))
             puts "(#{node_id_from},#{node_id_to}) One of the nodes does not exist"
         else
-            get_node!(node_id_from).connect_to(node_id_to, edge_id)
+            node!(node_id_from).connect_to(node_id_to, edge_id)
         end
     end
 
@@ -228,7 +229,7 @@ class Graph
     #
     def build_aho_corasick_graph!(keywords)
         add_node(0)
-        new_state = get_node!(0).get_id
+        new_state = node!(0).id
 
         keywords.each do |keyword|
             new_state = enter!(keyword, new_state)
@@ -244,7 +245,7 @@ class Graph
     #
     def display_outputs
         @nodes.values.each do |n|
-            puts "Node #{n.get_id} --> #{n.get_output}" if n.get_output.size > 0
+            puts "Node #{n.id} --> #{n.output}" if n.output.size > 0
         end
     end
 
@@ -253,7 +254,7 @@ class Graph
     #
     def display_neighbors
         @nodes.values.each do |n|
-            puts "Node #{n.get_id} --> #{n.get_neighbors!}" if n.get_neighbors!.size > 0
+            puts "Node #{n.id} --> #{n.neighbors}" if n.neighbors.size > 0
         end
     end
 
@@ -264,10 +265,10 @@ class Graph
     #
     def display_graph
         @nodes.values.each do |n|
-            puts "Node #{n.get_id}"
-            puts  " --> #{n.get_neighbors!}" if n.get_neighbors!.size > 0
-            puts  " --> #{n.get_output}"     if n.get_output.size     > 0
-            puts  " --> #{n.get_failure}"    if n.get_failure        != 0
+            puts "Node #{n.id}"
+            puts  " --> #{n.neighbors}"   if n.neighbors.size  > 0
+            puts  " --> #{n.output}"  if n.output.size > 0
+            puts  " --> #{n.failure}" if n.failure    != 0
             puts
         end
         
@@ -275,20 +276,20 @@ class Graph
 
 private
     def enter!(keyword, new_state)
-        state = get_node!(0)
+        state = node!(0)
         keyword_index = 0
         
-        while state.get_goto( keyword[keyword_index] )
-            state_id = state.get_goto( keyword[keyword_index] )
-            state    = get_node!( state_id )
+        while state.goto( keyword[keyword_index] )
+            state_id = state.goto( keyword[keyword_index] )
+            state    = node!( state_id )
             keyword_index += 1
         end
 
         keyword_index.upto(keyword.length - 1) { |i|
             new_state += 1
             add_node(new_state)
-            add_edge(state.get_id, new_state, keyword[i])
-            state = get_node!(new_state)
+            add_edge(state.id, new_state, keyword[i])
+            state = node!(new_state)
         }
         state.add_output(keyword)
         return new_state
@@ -297,9 +298,9 @@ private
     def compute_aho_corasick_failure()
         queue = []
 
-        get_node!(0).get_neighbors!.each do |first_level_neighbor|
+        node!(0).neighbors.each do |first_level_neighbor|
             neighbor_id = first_level_neighbor[0]
-            queue      << get_node!( neighbor_id )
+            queue      << node!( neighbor_id )
             # we do not need to set f(first_level_neighbor) to 0
             # because it is done by the default constructor.
         end
@@ -307,25 +308,25 @@ private
         while queue.size > 0 do
             r = queue.shift
 
-            r.get_neighbors!.each do |r_neighbor|
+            r.neighbors.each do |r_neighbor|
                 r_neighbor_id   = r_neighbor[0]
                 r_neighbor_edge = r_neighbor[1]
-                queue << get_node!( r_neighbor_id )
-                state  = r.get_failure
+                queue << node!( r_neighbor_id )
+                state  = r.failure
 
-                while state!=0 && get_node!(state).get_goto(r_neighbor_edge)==nil
-                    state =  get_node!(state).get_failure
+                while state!=0 && node!(state).goto(r_neighbor_edge)==nil
+                    state =  node!(state).failure
                 end
                 
-                if get_node!(state).get_goto(r_neighbor_edge)
-                    get_node!(r_neighbor_id).set_failure(get_node!(state).get_goto(r_neighbor_edge))
+                if node!(state).goto(r_neighbor_edge)
+                    node!(r_neighbor_id).failure=(node!(state).goto(r_neighbor_edge))
                 end
 
-                s = get_node!(r_neighbor_id).get_failure
+                s = node!(r_neighbor_id).failure
 
-                output1 = get_node!(r_neighbor_id).get_output
-                output2 = get_node!(      s      ).get_output
-                get_node!(r_neighbor_id).set_output( output1 |= output2 )
+                output1 = node!(r_neighbor_id).output
+                output2 = node!(      s      ).output
+                node!(r_neighbor_id).output=( output1 |= output2 )
             end
         end
     end
