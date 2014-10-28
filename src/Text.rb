@@ -38,7 +38,7 @@ class Text
 	# * +false+ otherwise
 	#
 	def find(needle)
-		puts "Find"
+		@haystack_graph.find(needle)
 	end
 
 	# Display the Aho-Corasick Graph

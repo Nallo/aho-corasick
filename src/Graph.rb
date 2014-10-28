@@ -235,7 +235,25 @@ class Graph
             new_state = enter!(keyword, new_state)
         end
 
-        compute_aho_corasick_failure()
+        #compute_aho_corasick_failure()
+    end
+
+    def find(needle)
+        state = node!(0)
+        index = 0
+
+        index.upto(needle.length - 1){ |i|
+            c = needle[i]
+
+            if(not state.has_edge_with_id?(c))
+                return false
+            end
+
+            state_id = state.goto(c)
+            state = node!(state_id)
+            puts "- #{state.id}"
+        }
+        return state.output.include?(needle)
     end
 
 # Functions for Debug Purpose.

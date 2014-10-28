@@ -10,5 +10,5 @@ t1.display_result()
 t2.display_result()
 t3.display_result()
 
-#TBD
-#t1.find("needle")
+v = t1.find("he")
+puts v
