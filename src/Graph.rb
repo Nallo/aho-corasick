@@ -208,7 +208,7 @@ class Graph
         if (not @nodes.include?(node_id_from)) || (not @nodes.include?(node_id_to))
             puts "(#{node_id_from},#{node_id_to}) One of the nodes does not exist"
         else
-            @nodes[node_id_from].connect_to(node_id_to, edge_id)
+            get_node!(node_id_from).connect_to(node_id_to, edge_id)
         end
     end
 
@@ -280,7 +280,7 @@ private
         
         while state.get_goto( keyword[keyword_index] )
             state_id = state.get_goto( keyword[keyword_index] )
-            state    = @nodes[state_id]
+            state    = get_node!( state_id )
             keyword_index += 1
         end
 
@@ -299,7 +299,7 @@ private
 
         get_node!(0).get_neighbors!.each do |first_level_neighbor|
             neighbor_id = first_level_neighbor[0]
-            queue      << @nodes[neighbor_id]
+            queue      << get_node!( neighbor_id )
             # we do not need to set f(first_level_neighbor) to 0
             # because it is done by the default constructor.
         end
@@ -310,7 +310,7 @@ private
             r.get_neighbors!.each do |r_neighbor|
                 r_neighbor_id   = r_neighbor[0]
                 r_neighbor_edge = r_neighbor[1]
-                queue << @nodes[r_neighbor_id]
+                queue << get_node!( r_neighbor_id )
                 state  = r.get_failure
 
                 while state!=0 && get_node!(state).get_goto(r_neighbor_edge)==nil
