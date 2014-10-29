@@ -13,17 +13,12 @@ class Text
 	#
 	# ==== Attributes
 	#
-	# * +plain_text+ The plain text composed by a sequence of words.
-	# The sequence of words can be separated by whitespace, new line or
-	# can be a list of words without whitespace.
+	# * +list_of_keywords+ The plain text composed by a sequence of words.
+	# The sequence of words is a list of strings.
 	#
-	def initialize(plain_text)
-		if plain_text.instance_of?(String)
-			plain_text = plain_text.split("\s")
-		end
-
+	def initialize(list_of_keywords)
 		@haystack_graph = Graph.new()
-		@haystack_graph.build_aho_corasick_graph!(plain_text)
+		@haystack_graph.build_aho_corasick_graph!(list_of_keywords)
 	end
 
 	# Search the Needle into the Haystack
