@@ -6,15 +6,13 @@ The implementation behind the scenes uses the [Aho-Corasick](http://en.wikipedia
 string matching algorithm. However, the full functionality of this algorithm
 is not yet implemented.
 
-[TOC]
-
-# Getting the sources {#getting_source}
+## Getting the sources
 
     $ git clone https://github.com/Nallo/aho-corasick.git
 
     # clone the repo into the aho-corasick folder
 
-# Usage {#usage}
+## Usage
 
 In the `src` folder you find the `example.rb` script. You can run the script
 by typing:
@@ -59,7 +57,7 @@ file `Haystack.rb` in the `src/lib` folder. The file is pretty straightforward
 * `query` does the same as `has?` except that it prints out a small message
 * `find_all` **will** use the real power of the Aho-Corasick algorithm (sorry for that, weekends are too short)
 
-# Custom Usage {#custom_usage}
+## Custom Usage
 
 If you want to play around with this API you can write a small Ruby script that
 follows this skeleton
@@ -76,7 +74,7 @@ follows this skeleton
     # You can use both 'has?'' and 'query' to query the Haystack
     my_haystack.has?("this keyword") # => false I guess
 
-# Unittests {#unittest}
+## Unittests
 
 Let's have some fun. If you what to contribute to this project you are
 welcome. You can play with **pull requests** and whatever you want but.
