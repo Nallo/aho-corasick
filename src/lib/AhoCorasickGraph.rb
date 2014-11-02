@@ -6,7 +6,7 @@
 #
 #
 
-require_relative 'GraphBase.rb'
+require 'GraphBase'
 
 class AhoCorasickNode < Node
 
@@ -70,13 +70,12 @@ class AhoCorasickGraph < Graph
             new_state += 1
         }
         state.add_output(needle)
-        #compute_aho_corasick_failure()
     end
 
     # def compute_aho_corasick_failure()
     #     queue = []
 
-    #     node(0).neighbors.each do |first_level_neighbor|
+    #     node(0).edges.each do |first_level_neighbor|
     #         neighbor_id = first_level_neighbor[0]
     #         queue      << node( neighbor_id )
     #         # we do not need to set f(first_level_neighbor) to 0

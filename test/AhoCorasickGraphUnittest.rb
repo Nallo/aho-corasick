@@ -5,7 +5,7 @@
 #
 # run with:
 #
-# ruby -vI src test/AhoCorasickGraphUnittest.rb
+# ruby -vI src/lib test/AhoCorasickGraphUnittest.rb
 
 require 'simplecov'
 SimpleCov.start
@@ -18,7 +18,7 @@ class TestAhoCorasickNode < Test::Unit::TestCase
     def test_constructor
         n = AhoCorasickNode.new("node")
         assert_equal("node", n.name)
-        assert_equal(0     , n.failure)
+        assert_equal(0,      n.failure)
         assert_equal([]    , n.output)
 
         n = AhoCorasickNode.new()
@@ -105,6 +105,8 @@ class TestAhoCorasickGraph < Test::Unit::TestCase
         assert_equal(true, g.has?("she"))
         assert_equal(true, g.has?("his"))
         assert_equal(true, g.has?("hers"))
+
+        #g.compute_failure()
 
         assert_equal([], g.node(1).output)
         assert_equal(["he"], g.node(2).output)

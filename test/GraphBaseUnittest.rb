@@ -5,7 +5,7 @@
 #
 # run with:
 #
-# ruby -vI src test/GraphBaseUnittest.rb
+# ruby -vI src/lib test/GraphBaseUnittest.rb
 
 require 'simplecov'
 SimpleCov.start
