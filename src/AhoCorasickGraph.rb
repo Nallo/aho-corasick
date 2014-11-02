@@ -42,7 +42,7 @@ class AhoCorasickGraph < Graph
     def add_node(with_name)
         unless ( not with_name ) ||
                ( with_name.length==0 if with_name.instance_of?(String) ) ||
-               ( @nodes.include?(with_name) )
+               ( @nodes.has_key?(with_name) )
             @nodes[with_name] = AhoCorasickNode.new(with_name)
             @nodes_count += 1
         end
@@ -50,6 +50,8 @@ class AhoCorasickGraph < Graph
 
     def add(needle)
         return nil if needle==nil
+
+        puts "Processing #{needle}..."
 
         state = node("root")
         needle_index = 0
@@ -121,7 +123,7 @@ class AhoCorasickGraph < Graph
             end
 
             state = state.goto(c)
-            puts "- #{state.name}"
+            #puts "- #{state.name}"
         }
         return state.output.include?(needle)
     end

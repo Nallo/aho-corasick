@@ -31,10 +31,3 @@ class Haystack
     end
 
 end
-
-h = Haystack.new()
-h.add("he")
-h.add("she")
-h.add("his")
-h.add("hers")
-puts h.has?("he")

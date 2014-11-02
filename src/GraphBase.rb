@@ -25,7 +25,7 @@ class Node
     end
 
     def has_edge?(edge)
-        return ( @edges.include?(edge) )
+        return ( @edges.has_key?(edge) )
     end
 
 end
@@ -45,7 +45,7 @@ class Graph
     def add_node(with_name)
         unless ( not with_name ) ||
                ( with_name.length==0 if with_name.instance_of?(String) ) ||
-               ( @nodes.include?(with_name) )
+               ( @nodes.has_key?(with_name) )
             @nodes[with_name] = Node.new( with_name )
             @nodes_count += 1
         end
@@ -61,7 +61,7 @@ class Graph
         unless ( not from ) || ( from.length==0 if from.instance_of?(String) ) || 
                ( not to   ) || (   to.length==0 if   to.instance_of?(String) ) ||
                ( not edge ) || ( edge.length==0 if edge.instance_of?(String) ) ||
-               ( not @nodes.include?(from) ) || ( not @nodes.keys.include?(to) )
+               ( not @nodes.has_key?(from) ) || ( not @nodes.has_key?(to) )
             node_to_ptr = @nodes[to]
             node(from).connect_to(node_to_ptr, edge)            
         end
